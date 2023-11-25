@@ -1,0 +1,10 @@
+-Consumir api de cotizacion y crear endpoint para compra de dolares Nicolas
+-Validacion Joi (opcional)
+-Tests Manuel
+-Documentacion Juani
+-Configuracion .dotenv
+
+Ideas
+-mandar mail de bienvenida (nodemailer)
+-Generar algun reporte de los movimientos
+-Atlas 

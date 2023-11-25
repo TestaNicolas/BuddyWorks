@@ -1,0 +1,468 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+      "title":"Banco",
+      "description": "API de un banco para realizar operaciones sobre una cuenta",
+      "version":"1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080",
+            "description": "Local"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "RegistroRequest": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "messiElLindo"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "18122023"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LoginRequest": {
+                "type": "object",
+                "required": ["username", "password"],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "example": "messiElLindo"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "18122023"
+                    }
+                }
+            }
+        },  
+        "securitySchemes": {
+            "JWT": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "paths": {
+        "/signUp": {
+            "post": {
+                "tags": ["Autenticacion"],
+                "description": "Permite registrar un usuario y obtener una cuenta",
+                "parameters": [],
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "$ref": "#/components/schemas/RegistroRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. Se creo el usuario y la cuenta vinculada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "El usuario con la contraseña encriptada",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "El id generada",
+                                            "example": "6552e4cf1c88bebc6179b7fa"
+                                        },
+                                        "username": {
+                                            "type": "string",
+                                            "example": "messiElLindo"
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "description": "Contraseña encriptada",
+                                            "example": "$2a$10$vIzBrEcmUi/AbJYiKdO.ru1r.gjneiY8CoLJUaEql9997lgKTPHDO"
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Descripcion de error",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Ya existe usuario con ese nombre"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": ["Autenticacion"],
+                "description": "Permite obtener un token",
+                "parameters": [],
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema":{
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. Se autenticó con éxito",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "description": "El token generado",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXIiOiI2NTU2YmU1ZDEyZGFjOGYyZmYyY2FmOTAifSwiaWF0IjoxNzAwMTgzNjY1LCJleHAiOjE3MDAxODM3ODV9.fPstPMSjj7ESeJbH9sHszQj9WyOEyy5bs_DS096b1fo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Descripcion de error",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Credenciales inválidas"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ingresar": {
+            "post": {
+                "tags": ["Cuenta"],
+                "description": "Permite ingresar dinero a la cuenta",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "monto": {
+                                        "type": "number",
+                                        "example": 10000
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "motivo"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. Se ingreso el monto a la cuenta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "monto": {
+                                            "type": "number",
+                                            "example": 5000
+                                        },
+                                        "moneda": {
+                                            "type": "string",
+                                            "example": "$"
+                                        },
+                                        "descripcion": {
+                                            "type": "string",
+                                            "example": "Ingreso de dinero"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Descripcion de error",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "\"monto\" must be a positive number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{
+                    "JWT": []
+                }]
+            }
+        },
+        "/transferir": {
+            "post": {
+                "tags": ["Cuenta"],
+                "description": "Permite transferir plata a una cuenta",
+                "parameters": [],
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "anyOf": [
+                                    {   "properties": {
+                                            "monto": {
+                                                "type": "number",
+                                                "example": 10000
+                                            },
+                                            "alias": {
+                                                "type": "string",
+                                                "example": "STAY.EVEN.APART"
+                                            },
+                                            "cbu": {
+                                                "type": "string",
+                                                "example": "0987942627514195265899"
+                                            }
+                                        },
+                                        "required": ["monto", "alias"]
+                                    },
+                                    {   "properties": {
+                                            "monto": {
+                                                "type": "number",
+                                                "example": 10000
+                                            },
+                                            "alias": {
+                                                "type": "string",
+                                                "example": "STAY.EVEN.APART"
+                                            },
+                                            "cbu": {
+                                                "type": "string",
+                                                "example": "0987942627514195265899"
+                                            }
+                                        },
+                                        "required": ["monto", "cbu"]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. Se transfirio el monto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "monto": {
+                                            "type": "number",
+                                            "example": 5000
+                                        },
+                                        "moneda": {
+                                            "type": "string",
+                                            "example": "$"
+                                        },
+                                        "destinatario": {
+                                            "type": "string",
+                                            "example": "1213301834242795152114"
+                                        },
+                                        "descripcion": {
+                                            "type": "string",
+                                            "example": "Transferencia saliente a 1213301834242795152114"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "BAD REQUEST",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Descripcion de error",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Cuenta destino no existente"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{
+                    "JWT":[]
+                }]
+            }
+        },
+         "/comprarDolares": {
+            "post": {
+                "tags": [
+                    "Cuenta"
+                ],
+                "description": "Comprar dólares con el dinero de la cuenta",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "monto": {
+                                        "type": "number",
+                                        "example": 100
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "motivo"
+                                    }
+                                },
+                                "required": [
+                                    "monto",
+                                    "descripcion"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "(OK) el monto fue convertido a dolares || \"Saldo Insuficiente\""
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Error en el Servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ]
+            }
+        },
+        "/cuenta": {
+            "get": {
+                "tags": ["Cuenta"],
+                "description": "Permite obtener datos de la cuenta",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "example": "6556be5d12dac8f2ff2caf92"
+                                        },
+                                        "usuario": {
+                                            "type": "string",
+                                            "example": "6556be5d12dac8f2ff2caf90"
+                                        },
+                                        "saldoPesos": {
+                                            "type": "number",
+                                            "example": 15000
+                                        },
+                                        "saldoDolares": {
+                                            "type": "number",
+                                            "example": 0
+                                        },
+                                        "alias": {
+                                            "type": "string",
+                                            "example": "THESE.SALE.YOUTH"
+                                        },
+                                        "cbu": {
+                                            "type": "string",
+                                            "example": "1213301834242795152114"
+                                        },
+                                        "movimientos": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "monto": {
+                                                        "type": "number"
+                                                    },
+                                                    "moneda": {
+                                                        "type": "string"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string"
+                                                    },
+                                                    "destinatario": {
+                                                        "type": "string",
+                                                        "description": "CBU en caso de transferencia"
+                                                    },
+                                                    "createdAt": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "example": [{"monto":10000,"moneda":"$","descripcion":"Prueba","_id":"6556be8a12dac8f2ff2caf96","createdAt":"2023-11-17T01:14:50.642Z"},{"monto":-100,"moneda":"$","destinatario":"2701202381676402620197","descripcion":"Transferencia saliente a 2701202381676402620197","_id":"6556beba12dac8f2ff2caf9e","createdAt":"2023-11-17T01:15:38.013Z"},{"monto":10000,"moneda":"$","descripcion":"motivo","_id":"655d71f8e124ae85304bc575","createdAt":"2023-11-22T03:14:00.100Z"},{"monto":-10000,"moneda":"$","destinatario":"0987942627514195265899","descripcion":"Transferencia saliente a 0987942627514195265899","_id":"655d7212e124ae85304bc57f","createdAt":"2023-11-22T03:14:26.009Z"},{"monto":5000,"moneda":"$","descripcion":"Ingreso de dinero","_id":"655e9d88c8b577736d4ab45b","createdAt":"2023-11-23T00:32:08.583Z"},{"monto":-100,"moneda":"$","destinatario":"2701202381676402620197","descripcion":"Transferencia saliente a 2701202381676402620197","_id":"655e9dd2c8b577736d4ab468","createdAt":"2023-11-23T00:33:22.702Z"},{"monto":-100,"moneda":"$","destinatario":"0987942627514195265899","descripcion":"Transferencia saliente a 0987942627514195265899","_id":"655e9de7c8b577736d4ab478","createdAt":"2023-11-23T00:33:43.273Z"},{"monto":-100,"moneda":"$","destinatario":"2701202381676402620197","descripcion":"Transferencia saliente a 2701202381676402620197","_id":"655e9e2dc8b577736d4ab494","createdAt":"2023-11-23T00:34:53.005Z"},{"monto":-100,"moneda":"$","destinatario":"1213301834242795152114","descripcion":"Transferencia saliente a 1213301834242795152114","_id":"655e9eb03276176c9c9da05a","createdAt":"2023-11-23T00:37:04.375Z"},{"monto":100,"moneda":"$","descripcion":"Transferencia entrante de 1213301834242795152114","_id":"655e9eb03276176c9c9da05b","createdAt":"2023-11-23T00:37:04.376Z"},{"monto":-100,"moneda":"$","destinatario":"1213301834242795152114","descripcion":"Transferencia saliente a 1213301834242795152114","_id":"655e9f283276176c9c9da074","createdAt":"2023-11-23T00:39:04.409Z"},{"monto":100,"moneda":"$","descripcion":"Transferencia entrante de 1213301834242795152114","_id":"655e9f283276176c9c9da075","createdAt":"2023-11-23T00:39:04.409Z"},{"monto":-100,"moneda":"$","destinatario":"1213301834242795152114","descripcion":"Transferencia saliente a 1213301834242795152114","_id":"655e9f393276176c9c9da093","createdAt":"2023-11-23T00:39:21.739Z"},{"monto":100,"moneda":"$","descripcion":"Transferencia entrante de 1213301834242795152114","_id":"655e9f393276176c9c9da094","createdAt":"2023-11-23T00:39:21.739Z"},{"monto":-100,"moneda":"$","destinatario":"1213301834242795152114","descripcion":"Transferencia saliente a 1213301834242795152114","_id":"655e9f53daa055746afd6866","createdAt":"2023-11-23T00:39:47.982Z"},{"monto":100,"moneda":"$","descripcion":"Transferencia entrante de 1213301834242795152114","_id":"655e9f53daa055746afd6867","createdAt":"2023-11-23T00:39:47.983Z"}]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ]
+            }
+        }
+    }
+} 
